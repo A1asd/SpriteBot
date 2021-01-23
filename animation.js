@@ -2,26 +2,50 @@ class Sprite {
 	currentFrame;
 	imageContainer;
 	currentAnimation;
-	dataset = {
-		"name": "HollowKnight",
-		"height": 64,
-		"width": 32,
-		"animations": {
-			"idle": {
-				"row": 1,
-				"frames": 2
-			}
-		}
+	currentSprite;
+	targetPosition = null;
+
+	static dataset = {
+		"HollowKnight" : {
+			"name": "HollowKnight",
+			"height": 64,
+			"width": 32,
+			"animations": {
+				"idle": {
+					"row": 1,
+					"frames": 2
+				},
+			},
+		},
+		"MushroomMan" : {
+			"name": "MushroomMan",
+			"height": 64,
+			"width": 32,
+			"animations": {
+				"idle": {
+					"row": 1,
+					"frames": 4
+				},
+			},
+		},
 	};
 
-	constructor(spriteString) {
+	constructor(spriteString, imageContainer) {
 		this.currentFrame = 0;
+		this.imageContainer = imageContainer;
+		this.currentSprite = Sprite.dataset[spriteString];
 		this.setAnimation("idle");
 	}
 
 	setAnimation(animationString) {
-		this.currentAnimation = this.dataset.animations[animationString];
+		this.currentAnimation = this.currentSprite.animations[animationString];
 		this.currentFrame = 0;
+	}
+
+	setTarget(position) {
+		if (this.targetPosition === null) {
+			this.targetPosition = position;
+		}
 	}
 
 	incrementFrame() {
@@ -31,34 +55,46 @@ class Sprite {
 		}
 	}
 
-	move(position) {
-		if (position.x > this.imageContainer.offsetLeft) {
+	move() {
+		if (this.targetPosition === null) {
+			return;
+		}
+
+		if (this.targetPosition.x > this.imageContainer.offsetLeft) {
 			this.imageContainer.style.transform = "scaleX(-1)";
 			this.imageContainer.style.left = (this.imageContainer.offsetLeft + 5) + "px";
 		} else {
 			this.imageContainer.style.transform = "";
+			this.imageContainer.style.left = (this.imageContainer.offsetLeft - 5) + "px";
 		}
-		position.x;
-		position.y;
 	}
 	
 	update() {
-		let x = this.dataset.width * this.currentFrame;
-		let y = this.dataset.height * (this.currentAnimation.row - 1);
+		let x = this.currentSprite.width * this.currentFrame;
+		let y = this.currentSprite.height * (this.currentAnimation.row - 1);
 
 		this.imageContainer.style.backgroundPositionX = x + "px";
 		this.imageContainer.style.backgroundPositionY = y + "px";
-	}
-
-	attach(container) {
-		this.imageContainer = container;
-		this.imageContainer.style.backgroundImage = "url('" + this.dataset.name + ".png')";
 	}
 }
 
 class SpriteHandler {
 	static spriteCount = 0;
 	static imageContainer;
+	static allOwners = {};
+
+	static addOwner(user, spriteString) {
+		console.log(Sprite.dataset, user, spriteString);
+		if (Sprite.dataset[spriteString] === undefined) return;
+
+		if (SpriteHandler.allOwners[user] === undefined) {
+			SpriteHandler.addNewSprite(spriteString);
+		} else {
+			SpriteHandler.changeSprite(user, spriteString);
+		}
+
+		//SpriteHandler.allOwners[user] = spriteString;
+	}
 
 	static addNewSprite(spriteString) {
 		SpriteHandler.spriteCount++;
@@ -68,13 +104,24 @@ class SpriteHandler {
 		container.style.height = "64px";
 		container.style.position = "absolute";
 		container.style.bottom = "-64px";
-		container.style.left = "0";
+		container.style.left = "400";
 
 		document.body.appendChild(container);
 		
-		let sprite = new Sprite(spriteString);
-		sprite.attach(container);
+		let sprite = new Sprite(spriteString, container);
+
+		sprite.imageContainer.style.backgroundImage = "url('" + sprite.currentSprite.name + ".png')";
+
+		sprite.setTarget({x: Math.random() * 800, y:0});
 		spriteArray.push(sprite);
+	}
+
+	static changeSprite(user, spriteString) {
+		console.log(SpriteHandler.allOwners[user]);
+		let sprite = new Sprite(spriteString, SpriteHandler.allOwners[user].imageContainer);
+		//SpriteHandler.allOwners[user] = sprite;
+		
+		sprite.imageContainer.style.backgroundImage = "url('" + sprite.currentSprite.name + ".png')";
 	}
 }
 
@@ -99,7 +146,7 @@ function animate() {
 	if (spriteArray.length > 0 && elapsedTime > 10) {
 		spriteArray.forEach(function(sprite) {
 			sprite.incrementFrame();
-			sprite.move({x: 60, y:0});
+			sprite.move();
 			sprite.update();
 		});
 		elapsedTime = 0;

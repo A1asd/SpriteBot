@@ -13,7 +13,13 @@ class Sprite {
 			"animations": {
 				"idle": {
 					"row": 1,
-					"frames": 2
+					"frames": 2,
+					"loops": 0,
+				},
+				"cheer": {
+					"row": 2,
+					"frames": 6,
+					"loops": 7,
 				},
 			},
 		},
@@ -24,7 +30,13 @@ class Sprite {
 			"animations": {
 				"idle": {
 					"row": 1,
-					"frames": 4
+					"frames": 4,
+					"loops": 0,
+				},
+				"cheer": {
+					"row": 2,
+					"frames": 4,
+					"loops": 1,
 				},
 			},
 		},
@@ -57,15 +69,22 @@ class Sprite {
 
 	move() {
 		if (this.targetPosition === null) {
+			this.setTarget({x: Math.random() * 800, y:0});
 			return;
 		}
 
-		if (this.targetPosition.x > this.imageContainer.offsetLeft) {
+		let step = Math.min(Math.abs(this.targetPosition.x - this.imageContainer.offsetLeft) / 15, 5);
+
+		if (this.targetPosition.x >= this.imageContainer.offsetLeft) {
 			this.imageContainer.style.transform = "scaleX(-1)";
-			this.imageContainer.style.left = (this.imageContainer.offsetLeft + 5) + "px";
+			this.imageContainer.style.left = (this.imageContainer.offsetLeft + step) + "px";
 		} else {
 			this.imageContainer.style.transform = "";
-			this.imageContainer.style.left = (this.imageContainer.offsetLeft - 5) + "px";
+			this.imageContainer.style.left = (this.imageContainer.offsetLeft - step) + "px";
+		}
+
+		if (Math.abs(this.targetPosition.x - this.imageContainer.offsetLeft) <= 10) {
+			this.targetPosition = null;
 		}
 	}
 	
@@ -83,12 +102,12 @@ class SpriteHandler {
 	static imageContainer;
 	static allOwners = {};
 
-	static addOwner(user, spriteString) {
-		console.log(Sprite.dataset, user, spriteString);
+	static spawnSprite(user, spriteString) {
+		// Check if sprite exists
 		if (Sprite.dataset[spriteString] === undefined) return;
 
 		if (SpriteHandler.allOwners[user] === undefined) {
-			SpriteHandler.addNewSprite(spriteString);
+			SpriteHandler.addNewSprite(user, spriteString);
 		} else {
 			SpriteHandler.changeSprite(user, spriteString);
 		}
@@ -96,7 +115,7 @@ class SpriteHandler {
 		//SpriteHandler.allOwners[user] = spriteString;
 	}
 
-	static addNewSprite(spriteString) {
+	static createImageContainer(user) {
 		SpriteHandler.spriteCount++;
 		let container = document.createElement("div");
 		container.id = "imageContainer" + SpriteHandler.spriteCount;
@@ -104,29 +123,38 @@ class SpriteHandler {
 		container.style.height = "64px";
 		container.style.position = "absolute";
 		container.style.bottom = "-64px";
-		container.style.left = "400";
+		container.style.left = Math.random() * 400;
+		container.style.color = getRandomColor();
 
+		let textNode = document.createTextNode(user)
+		container.appendChild(textNode);
+
+
+		return container;
+	}
+
+	static addNewSprite(user, spriteString) {
+		let container = SpriteHandler.createImageContainer(user);
 		document.body.appendChild(container);
 		
 		let sprite = new Sprite(spriteString, container);
-
 		sprite.imageContainer.style.backgroundImage = "url('" + sprite.currentSprite.name + ".png')";
 
 		sprite.setTarget({x: Math.random() * 800, y:0});
+		SpriteHandler.allOwners[user] = {};
+		SpriteHandler.allOwners[user].sprite = sprite;
+		SpriteHandler.allOwners[user].container = container;
 		spriteArray.push(sprite);
 	}
 
 	static changeSprite(user, spriteString) {
-		console.log(SpriteHandler.allOwners[user]);
-		let sprite = new Sprite(spriteString, SpriteHandler.allOwners[user].imageContainer);
-		//SpriteHandler.allOwners[user] = sprite;
-		
-		sprite.imageContainer.style.backgroundImage = "url('" + sprite.currentSprite.name + ".png')";
-	}
-}
+		let container = SpriteHandler.allOwners[user].container;
 
-function animateContainer() {
-	sprite.setAnimation("cheer");
+		let sprite = new Sprite(spriteString, container);
+		sprite.imageContainer.style.backgroundImage = "url('" + sprite.currentSprite.name + ".png')";
+
+		SpriteHandler.allOwners[user].sprite = sprite;
+	}
 }
 
 const FRAME_DURATION = 1000/60;
@@ -155,6 +183,15 @@ function animate() {
 	lastUpdate = now;
 
 	requestAnimationFrame(animate);
+}
+
+function getRandomColor() {
+	var letters = '0123456789ABCDEF';
+	var color = '#';
+	for (var i = 0; i < 6; i++) {
+	  color += letters[Math.floor(Math.random() * 16)];
+	}
+	return color;
 }
 
 document.addEventListener("DOMContentLoaded", function() {

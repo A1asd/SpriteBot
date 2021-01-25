@@ -9,11 +9,11 @@ class Sprite {
 		"HollowKnight" : {
 			"name": "HollowKnight",
 			"height": 64,
-			"width": 32,
+			"width": 48,
 			"animations": {
 				"idle": {
 					"row": 1,
-					"frames": 1,
+					"frames": 4,
 					"loops": 0,
 				},
 				"cheer": {

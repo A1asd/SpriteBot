@@ -13,7 +13,7 @@ class Sprite {
 			"animations": {
 				"idle": {
 					"row": 1,
-					"frames": 2,
+					"frames": 1,
 					"loops": 0,
 				},
 				"cheer": {
@@ -87,6 +87,10 @@ class Sprite {
 			this.targetPosition = null;
 		}
 	}
+
+	parting() {
+
+	}
 	
 	update() {
 		let x = this.currentSprite.width * this.currentFrame;
@@ -154,6 +158,10 @@ class SpriteHandler {
 		sprite.imageContainer.style.backgroundImage = "url('" + sprite.currentSprite.name + ".png')";
 
 		SpriteHandler.allOwners[user].sprite = sprite;
+	}
+
+	static removeSprite(user) {
+		SpriteHandler.allOwners[user].sprite;
 	}
 }
 

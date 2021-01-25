@@ -4,8 +4,6 @@ const colorRegex = new RegExp("^\#[a-fA-F0-9]{6}$");
 ComfyJS.Init(twitchTvHandle);
 
 ComfyJS.onCommand = (user, command, message, flags, extra) => {
-	console.log(`!${command} was typed in chat`);
-
 	if (command === "color") {
 		if (colorRegex.test(message)) {
 			SpriteHandler.changeTextColor(user, message);
@@ -23,4 +21,8 @@ ComfyJS.onCommand = (user, command, message, flags, extra) => {
 	if (command === "sit") {
 		SpriteHandler[user].sprite.setAnimation("sit");
 	}
-}
+};
+
+ComfyJS.onPart = (user, self, extra) => {
+	SpriteHandler.removeSprite(user);
+};

@@ -123,7 +123,7 @@ class SpriteHandler {
 		SpriteHandler.spriteCount++;
 		let container = document.createElement("div");
 		container.id = "imageContainer" + SpriteHandler.spriteCount;
-		container.style.width = "32px";
+		container.style.width = "48px";
 		container.style.height = "64px";
 		container.style.position = "absolute";
 		container.style.bottom = "-64px";

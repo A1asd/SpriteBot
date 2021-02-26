@@ -1,3 +1,0 @@
-const configuration = {
-  debugMode: false,
-};

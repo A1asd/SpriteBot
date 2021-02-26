@@ -1,3 +1,3 @@
 const configuration = {
-  debugMode: true,
+  debugMode: false,
 };

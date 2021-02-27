@@ -12,7 +12,10 @@ const spriteData = {
 			"cheer": {
 				"row": 2,
 				"frames": 2,
-				"loops": 7,
+				"loops": 12,
+				"keyframes": {
+					1: { bottom: "-62px" },
+				},
 			},
 			"sit": {
 				"row": 3,

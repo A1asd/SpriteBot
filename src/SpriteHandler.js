@@ -18,10 +18,7 @@ class SpriteHandler {
 		SpriteHandler.spriteCount++;
 		let container = document.createElement("div");
 		container.id = "imageContainer" + SpriteHandler.spriteCount;
-		container.style.width = "48px";
-		container.style.height = "64px";
 		container.style.position = "absolute";
-		container.style.bottom = "-64px";
 		container.style.left = Math.random() * 400;
 		//container.style.color = getRandomColor();
 
@@ -36,7 +33,10 @@ class SpriteHandler {
 		document.body.appendChild(container);
 		
 		let sprite = new Sprite(spriteString, container);
-		sprite.imageContainer.style.backgroundImage = "url('Sprites/" + sprite.spriteData.name + ".png')";
+		sprite.imageContainer.style.backgroundImage = "url('res/Sprites/" + sprite.spriteData.name + ".png')";
+		sprite.imageContainer.style.width = sprite.spriteData.width;
+		sprite.imageContainer.style.height = sprite.spriteData.height;
+		sprite.imageContainer.style.bottom = "-" + sprite.spriteData.height;
 
 		sprite.setTarget({x: Math.random() * 800, y:0});
 
@@ -56,7 +56,7 @@ class SpriteHandler {
 		let container = SpriteHandler.userList[user].container;
 
 		let sprite = new Sprite(spriteString, container);
-		sprite.imageContainer.style.backgroundImage = "url('Sprites/" + sprite.spriteData.name + ".png')";
+		sprite.imageContainer.style.backgroundImage = "url('res/Sprites/" + sprite.spriteData.name + ".png')";
 
 		SpriteHandler.userList[user].sprite = sprite;
 	}

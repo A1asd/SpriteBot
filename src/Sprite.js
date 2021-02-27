@@ -82,6 +82,14 @@ class Sprite {
 		let x = -(this.spriteData.width * this.currentFrame);
 		let y = -(this.spriteData.height * (this.animation.row - 1));
 
+		if (this.animation.hasOwnProperty('keyframes') !== false) {	
+			if (this.animation.keyframes.hasOwnProperty(this.currentFrame) !== false) {
+				this.imageContainer.style.bottom = this.animation.keyframes[this.currentFrame].bottom;
+			} else {
+				this.imageContainer.style.bottom = "-" + this.spriteData.height;
+			}
+		}
+
 		this.imageContainer.style.backgroundPositionX = x + "px";
 		this.imageContainer.style.backgroundPositionY = y + "px";
 	}

@@ -1,13 +1,13 @@
 class SpriteHandler {
 	static spriteCount = 0;
 	static imageContainer;
-	static allOwners = {};
+	static userList = {};
 
 	static spawnSprite(user, spriteString) {
 		// Check if sprite exists
-		if (Sprite.dataset[spriteString] === undefined) return;
+		if (spriteData[spriteString] === undefined) return;
 
-		if (SpriteHandler.allOwners[user] === undefined) {
+		if (SpriteHandler.getUserById(user) === null) {
 			SpriteHandler.addNewSprite(user, spriteString);
 		}
 
@@ -23,7 +23,7 @@ class SpriteHandler {
 		container.style.position = "absolute";
 		container.style.bottom = "-64px";
 		container.style.left = Math.random() * 400;
-		container.style.color = getRandomColor();
+		//container.style.color = getRandomColor();
 
 		let textNode = document.createTextNode(user)
 		container.appendChild(textNode);
@@ -31,34 +31,58 @@ class SpriteHandler {
 		return container;
 	}
 
-	static addNewSprite(user, spriteString) {
-		let container = SpriteHandler.createImageContainer(user);
+	static addNewSprite(userId, spriteString) {
+		let container = SpriteHandler.createImageContainer(userId);
 		document.body.appendChild(container);
 		
 		let sprite = new Sprite(spriteString, container);
-		sprite.imageContainer.style.backgroundImage = "url('Sprites/" + sprite.currentSprite.name + ".png')";
+		sprite.imageContainer.style.backgroundImage = "url('Sprites/" + sprite.spriteData.name + ".png')";
 
 		sprite.setTarget({x: Math.random() * 800, y:0});
-		SpriteHandler.allOwners[user] = {};
-		SpriteHandler.allOwners[user].sprite = sprite;
-		SpriteHandler.allOwners[user].container = container;
+
+		let user = new User(userId);
+		user.connectSprite(sprite);
+		user.connectImageContainer(container);
+		SpriteHandler.addUserToList(userId, user);
+
+		/*SpriteHandler.userList[user] = {};
+		SpriteHandler.userList[user].sprite = sprite;
+		SpriteHandler.userList[user].container = container;*/
+
 		spriteArray.push(sprite);
 	}
 
 	static changeSprite(user, spriteString) {
-		let container = SpriteHandler.allOwners[user].container;
+		let container = SpriteHandler.userList[user].container;
 
 		let sprite = new Sprite(spriteString, container);
-		sprite.imageContainer.style.backgroundImage = "url('Sprites/" + sprite.currentSprite.name + ".png')";
+		sprite.imageContainer.style.backgroundImage = "url('Sprites/" + sprite.spriteData.name + ".png')";
 
-		SpriteHandler.allOwners[user].sprite = sprite;
+		SpriteHandler.userList[user].sprite = sprite;
 	}
 
 	static animateSprite(user, animationString) {
-		SpriteHandler.allOwners[user].sprite.setAnimation(animationString);
+		SpriteHandler.getUserById(user).getSprite().setAnimation(animationString);
 	}
 
 	static removeSprite(user) {
-		SpriteHandler.allOwners[user].sprite;
+		SpriteHandler.userList[user].sprite;
+	}
+	
+	static getUserById(id) {
+		if (SpriteHandler.userList.hasOwnProperty(id)) {
+			return SpriteHandler.userList[id];
+		}
+		return null;
+	}
+
+	static addUserToList(id, userObject) {
+		if (!SpriteHandler.userList.hasOwnProperty(id)) {
+			SpriteHandler.userList[id] = userObject;
+		}
+	}
+
+	static removerUserById(id) {
+		delete SpriteHandler.userList[id];
 	}
 }

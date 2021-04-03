@@ -20,6 +20,7 @@ class SpriteHandler {
 		container.id = "imageContainer" + SpriteHandler.spriteCount;
 		container.style.position = "absolute";
 		container.style.left = Math.random() * 400;
+		container.style.fontSize = "12px";
 		//container.style.color = getRandomColor();
 
 		let textNode = document.createTextNode(user)

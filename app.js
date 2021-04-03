@@ -77,8 +77,8 @@ function getRandomColor() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-	if (configuration.debugMode) {
+	/*if (configuration.debugMode) {
 		initDom();
-	}
+	}*/
 	animate();
 });

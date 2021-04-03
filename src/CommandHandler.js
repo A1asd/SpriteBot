@@ -10,7 +10,7 @@ ComfyJS.onCommand = (user, command, message, flags, extra) => {
 		}
 	}
 
-	if (command === "create" || command === "spawn" || command === "respawn") {
+	if (command === "spawn") {
 		SpriteHandler.spawnSprite(user, message);
 	}
 

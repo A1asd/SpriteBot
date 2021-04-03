@@ -3,47 +3,40 @@ class SpriteHandler {
 	static imageContainer;
 	static userList = {};
 
-	static spawnSprite(user, spriteString) {
+	static spawnSprite(userId, spriteString) {
 		// Check if sprite exists
 		if (spriteData[spriteString] === undefined) return;
 
-		if (SpriteHandler.getUserById(user) === null) {
+		if (SpriteHandler.getUserById(userId) === null) {
+			let user = new User(userId);
 			SpriteHandler.addNewSprite(user, spriteString);
 		}
 
 		//SpriteHandler.allOwners[user] = spriteString;
 	}
 
-	static createImageContainer(user) {
-		SpriteHandler.spriteCount++;
-		let container = document.createElement("div");
-		container.id = "imageContainer" + SpriteHandler.spriteCount;
-		container.style.position = "absolute";
-		container.style.left = Math.random() * 400;
-		//container.style.color = getRandomColor();
+	static addNewSprite(user, spriteString) {
+		let sprite = new Sprite(spriteString);
 
-		let textNode = document.createTextNode(user)
+		let userContainer = document.createElement("div");
+		let textNode = document.createTextNode(user.getId())
 		container.appendChild(textNode);
+		userContainer.appendChild(textNode);
 
-		return container;
-	}
+		let container = sprite.createImageContainer(SpriteHandler.spriteCount);
 
-	static addNewSprite(userId, spriteString) {
-		let container = SpriteHandler.createImageContainer(userId);
-		document.body.appendChild(container);
+		userContainer.appendChild(container);
+		document.body.appendChild(userContainer);
 		
-		let sprite = new Sprite(spriteString, container);
-		sprite.imageContainer.style.backgroundImage = "url('res/Sprites/" + sprite.spriteData.name + ".png')";
-		sprite.imageContainer.style.width = sprite.spriteData.width;
-		sprite.imageContainer.style.height = sprite.spriteData.height;
-		sprite.imageContainer.style.bottom = "-" + sprite.spriteData.height;
+		sprite.setImageContainer(container);
 
 		sprite.setTarget({x: Math.random() * 800, y:0});
 
-		let user = new User(userId);
-		user.connectSprite(sprite);
-		user.connectImageContainer(container);
-		SpriteHandler.addUserToList(userId, user);
+		user.setSprite(sprite);
+		user.setImageContainer(userContainer);
+
+		SpriteHandler.spriteCount++;
+		SpriteHandler.addUserToList(user.getId(), user);
 
 		/*SpriteHandler.userList[user] = {};
 		SpriteHandler.userList[user].sprite = sprite;

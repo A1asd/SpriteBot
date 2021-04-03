@@ -6,11 +6,28 @@ class Sprite {
 	currentIteration = 0;
 	targetPosition = null;
 
-	constructor(spriteString, imageContainer) {
+	constructor(spriteString) {
 		this.currentFrame = 0;
-		this.imageContainer = imageContainer;
 		this.spriteData = spriteData[spriteString];
 		this.setAnimation("idle");
+	}
+
+	createImageContainer(idString) {
+		let container = document.createElement("div");
+		container.id = "imageContainer" + idString;
+		container.style.position = "absolute";
+		container.style.left = Math.random() * 400;
+		//container.style.color = getRandomColor();
+
+		return container;
+	}
+
+	setImageContainer(container) {
+		this.imageContainer = container
+		this.imageContainer.style.backgroundImage = "url('res/Sprites/" + this.spriteData.name + ".png')";
+		this.imageContainer.style.width = this.spriteData.width;
+		this.imageContainer.style.height = this.spriteData.height;
+		this.imageContainer.style.bottom = "-" + this.spriteData.height;
 	}
 
 	setAnimation(animationString) {

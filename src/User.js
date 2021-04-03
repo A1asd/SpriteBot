@@ -1,4 +1,8 @@
 class User {
+	id;
+	sprite;
+	imageContainer;
+
 	constructor(id) {
 		this.id = id;
 	}
@@ -11,7 +15,7 @@ class User {
 		return this.sprite;
 	}
 
-	connectSprite(sprite) {
+	setSprite(sprite) {
 		this.sprite = sprite;
 	}
 
@@ -20,7 +24,7 @@ class User {
 		delete this.sprite;
 	}
 
-	connectImageContainer(imageContainer) {
+	setImageContainer(imageContainer) {
 		this.imageContainer = imageContainer;
 	}
 
